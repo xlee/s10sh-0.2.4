@@ -1,0 +1,44 @@
+0.2.4
+  - Support for camera custom function setting (300D, 350D)
+  - 350D added, probably also other canon class camera's like 20D,30D,5D
+  - Only parameter/custom access and some basic file transfer was tested for the 350D.
+  
+0.2.3
+  - Support for camera parameter setting (300D)
+  
+0.2.2
+
+  - Minor fix to skip ".ctg" files present in the Flash filesystem when doing
+    -g and -n
+  - Added support for Canon Digital V2 (Thomas Funke <tfunke@gmx.de>)
+
+0.2.1
+
+  - Support for Canon Digital Ixus V3 (David Jones <drj@pobox.com>)
+  - Support for Powershot S30 (Stephan Weitz <stephan@weitz-net.de>)
+  - Support for Powershot A60 (Artem 'Zazoobr' Ignatjev <timon@memphis.mephi.ru>)
+  - Support for EOS-10D (Matthew Dillon <dillon@apollo.backplane.com>)
+  - Support for the Elph S400 (Sean_Welch@alum.wofford.org)
+  - Various printf's cleaned up and moved into "debug mode" only output
+  - option '-n' added which works like '-g' but only gets 'new' images in batch
+    mode 
+  - Update to libusb 0.1.7
+  - Fix problem in Makefile.in
+  - Fixed problem in what the "date" command reported. It was reporting GMT (as
+    stored in the camera) and I adjusted it for the local timezone.
+
+0.2.0
+
+  - Support for PowerShot G1, the protocol is the same, just added the USB-ID
+    (David Grant <dave@reach.net>)
+  - Tried to anticipate the USB-ID of the next PowerShot digicams (me)
+  - Libusb updated to 0.1.3b (me)
+  - Libusb will be automatically compiled by the Makefile (me)
+  - Enanched the configure script to find an already installed libusb
+    (John Reynolds <jjreynold@home.com>)
+  - Case conversion of filenames (John R.)
+  - Local TZ date (John R.)
+  - Set atime/mtime in retrivied files (John R.)
+  - FreeBSD serial default device name fix (John R.)
+  - Some other minor fix (John R.) John Reynolds <johnjen@reynoldsnet.org>
+

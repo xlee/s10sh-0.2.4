@@ -1,0 +1,86 @@
+********************************
+History:
+This program was originally written by Salvatore Sanfilippo at
+http://www.kyuzz.org/antirez/s10sh.html
+(The page was last updated Sat, Jan 6, 2001, at version 0.2.0.)
+
+Then the Debian maintainer, John Reynolds, made some changes at
+http://www.reynoldsnet.org/s10sh/
+(The page was last updated Sat, Sep 13, 2003 at version 0.2.2.)
+
+********************************
+s10sh - V0.2.2A 041219 release!
+Doug Mitton - dmitton@sympatico.ca
+
+WARNING:  These changes work just fine on my Canon Digital Rebel and I take no 
+responsibilty for how they may work on your camera.  Use with caution as I have not
+tested them on a variety of equipment.
+
+Purely for my own strange reason I updated this utility to do the following additional
+functions.  These changes ONLY work in USB mode as thats what I had to work with.  Also,
+I renamed the original files to a ".0" suffix before I updated them with my changes so
+reverting back to the original version is pretty simple.
+
+- Added Canon Digital Rebel camera and USB mode as the default.
+- Added "owner" string to the 'id' display.
+- Added 'setowner' command.
+- Added "Body ID" field to 'id' command.
+- Added 'settime' command and a command line '-t' option.
+  - This sets the camera time from the host computer.
+- Added a 'user_init' variable and a command line '-i level' option.
+  - Added a demo '-i 1' option which:
+    - sets the initial 'cd' to "C:\DCIM\xxxCANON\" where xxx is the latest directory.
+    - checks the camera time and if it is more than 8-10 min different from computer fixes it.
+    - only one init level is available at a time.
+- Added 'capture' command and command line '-c' option.
+  - Takes a picture with the current camera settings and displays the new image name.
+  - If UNKNOWN is displayed instead of the captured file name then you must cd to the
+    current photo directory either manually or using one of the "user_init" options.
+    - ie. "s10sh -i 1"
+
+Proposed Updates:
+- Allow multiple user_init options to be selected.
+- Allow multiple "capture" images with variable interval, command line too.
+- Allow capture to immediately download/display image/thumbnail.
+- Allow camera configuration changes, ie. LCD display time, mode, etc.
+
+Note(s):
+If you get an error like this:
+   usb 1-1: bulk timeout on ep1in
+   usb 1-1: usbfs: USBDEVFS_BULK failed ep 0x81 len 156 ret -110
+during the 'capture' command it just means that the camera is taking longer than I anticipated
+to save the picture before 's10sh' tries to re-connect to the camera.  It is actually a kernel
+message and I don't seem to be able to block it in 's10sh'.  You can hide it by increasing the
+timer value in "usb.c" "USB_control_camera()" function.  I didn't make it a variable, its hard 
+coded.  Everything will still work just fine, its just the display thats getting a little 
+cluttered.
+
+
+********************************
+s10sh - V0.2.2B 050328 release!
+
+Read and understand the WARNING above please!  This release may be a little more dangerous
+as I am adding an "auto detect" command line option for those who want to try the utility
+but may not be up to making the C code changes required.  I will also add whichever new
+cameras I receive in the interim, though I cannot verify their functionality.
+
+- Removed the "auto user_init 1" from the 300D initialization ... thats my default. 
+- Add a "-S" mode to set SERIAL mode. 
+  - Serial used to be the default BUT I made USB the default ... and no way to select serial.
+- Add an "autodetect" '-Z' option along with LOTS of warnings.
+- Add the Canon EOS-20D (04A9/30EB); this one probably does not work.
+- Add the Canon PowerShot A75 (04A9/30B5), because my daughter got one.
+  - Fixed the "id/setowner" display as this model doesn't have a "Bid"!
+- Fixed a CAPTURE display bug if you are not in the current photo directory when issued.
+
+
+********************************
+s10sh - V0.2.2C 051118 released!
+- Fixed a problem with the change from Standard/Winter to Daylight/Summer time.  The GMT_offset was
+  not reflecting the zone difference so the camera time wouldn't change in the "setdate" command.
+  - Modified the "date" command to show whether xST (standard) or xDT (daylight saving) time is displayed.
+  - edited common.c, main.c and usb.c to resolve.
+  - This may cause a problem in environments where the time structure "tm->tm_isdst" is not honoured.
+- Fixed a display problem with the "-h" (help) option.
+- This is the version first uploaded to the newly created sourceforge.net project.
+ 

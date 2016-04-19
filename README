@@ -1,0 +1,402 @@
+S10sh readme
+
+OVERVIEW
+
+  S10sh is a Canon PowerShot digital camera driver that
+  implements a DOS filesystem like interface. Using S10sh you can
+  download/explore the images captured with your digital camera.
+  This software is developed by Salvatore Sanfilippo that can
+  be contacted at the email address <antirez@invece.org>, and
+  is distributed under the terms of the GNU public license version 2.
+
+  This driver works at least with the following PowerShot models:
+
+  PS10
+  PS20
+  PS100 (Digital Ixus)
+  A50
+  Pro70
+
+  It has been reported by various people that the following models work, but I
+  don't have direct access to these cameras. Your mileage may vary:
+
+    Digital Ixus V3
+    Powershot S30
+    Powershot A60
+    EOS-10D
+
+  This driver was tested with the following Unix-like systems:
+
+  (Serial) Linux 2.2.x -- glibc
+  (Serial) Linux 2.2.x -- libc5
+  (USB)    Linux 2.4.0-test1-ac19 for USB support -- libc5
+  (USB)    Linux 2.2.16 (+usb-2.3.99-pre7-1-for-2.2.14) -- glibc 2.1.3
+
+  The driver was developed using the serial and USB protocol description
+  that is shipped with the gphoto's driver. The news about the protocol
+  discovered coding s10sh was merged to the gphoto's description.
+
+DOWNLOAD
+
+  You can find the latest release of this software at:
+
+    http://www.reynoldsnet.org/s10sh/s10sh-0.2.1.tar.gz
+
+  After John Reynolds took pseudo-ownership of the code after he could not get
+  any reply from Salvatore.
+
+AUTHORS
+
+Philippe Marzouk	<bullmali@afribone.net.ml>
+	A50 support improvements
+
+Edouard Lafargue	<lafargue@oslo.geco-prakla.slb.com>
+	Endianess issue
+	New serial commands implementation.
+	Valuable bugfixing.
+
+Martin Janzen		<janzen@magix.com.sg>
+	Support for the S100
+	Camera USB detection cleanup
+
+John Reynolds		<johnjen@reynoldsnet.org>
+			<jreynold@sedona.ch.intel.com>
+	Enanched the configure script to find an already installed libusb
+	Case conversion of filenames
+	Local TZ date
+	Set atime/mtime in retrivied files
+	FreeBSD serial default device name fix
+	Some other minor fix
+	Added '-n' option to automatically retreive all 'new' images in batch
+	Maintainer of FreeBSD port
+	Maintainer of code after 0.2.0 and long silence from Salvatore :(
+
+Salvatore Sanfilippo	<antirez@invece.org>
+	all the rest
+
+KNOWN BUGS
+
+* Serial protocol error recovering is primitive:
+
+  S10sh don't implement retrasmission and error recovery reliably.
+  Anyway error recovery implementation is quite simple, you can for
+  example just add a little buffer for old frames in the function that
+  sends the frames and when ACK isn't received resend the old frames,
+  also the resending should be applied in presence of an explicit request
+  from the camera (with a special ACK). Finally when old eot are received
+  they should be ACKnowledged.
+
+  Note that with USB there are not retrasmission problems.
+
+* Sometimes thumbnails download is broken, s10sh does not parse the Exif
+  header, but just search the JPG tags in order to understand where the
+  image starts.
+
+* The code is quite ugly, maybe I'll rewrite it in a clear way as library
+  some time.
+
+TODO
+
+  - Better error recovering for serial protocol.
+  - Support new PowerShot models.
+  - Encryption layer, Who would use a PowerShot as key-repository? :)
+
+WHY NOT GPHOTO?
+
+  This is just a text-only alternative for the Canon PowerShot users.
+  Without the efforts of the gphoto's developers, the developing of this
+  software might be more hard. Anyway I suggest to look at the latest
+  gphoto beta, the 0.5.x. Thanks gphoto developers!
+
+  JUST A NOTE -- the freesoftware strange world.
+
+  You can think I'm a stupid since instead to work at gphoto's canon
+  driver and use it in order to code s10sh I recoded it. Unfortunately
+  in the free software world this happens often, s10sh started as 40
+  lines of C code in order to understand why gphoto's canon driver did not
+  work with my camera, but with some additional coding it became an hack that
+  I used to download my photos, and finally a quite-usable software.
+  I'm planning to merge this two GPLed driver in order to obtain a
+  canon powershot lib, that join all the features and that will implement
+  an easy-to-use API.
+
+THANKS
+
+  gphoto developers                    For the cool program with many many
+                                       digital camera supported and for
+                                       protocol reverse engineering.
+
+  Christof Meerwald <cmeerw@web.de>    For an important support and
+                                       bugs reported.
+
+  Canon                                For its closed-mind policy about
+                                       protocol specifications.
+
+  Linux USB team                       For the Linux USB support.
+
+  Johannes Erdfelt, Thomas Sailer      For the libusb
+
+  Bull Afrique Mali <bullmali@afribone.net.ml> &&
+  Edouard Lafargue <lafargue@oslo.geco-prakla.slb.com> &&
+  Mikael Nyström <mikaeln@tripnet.se>  For gphoto coding, protocol
+                                       and feedbacks.
+
+  Martin Janzen <janzen@magix.com.sg>  S100 support.
+
+  Kevin Fenzi <kevin@scrye.com>        S100 new USB Product ID.
+
+  David Grant <dave@reach.net>         G1 product ID + patch.
+
+  GNU                                  No comments.
+
+  See also the AUTHORS section for additional credits.
+
+PERFORMANCE
+
+  Serial: about 5500 bytes/s
+  USB:    about 350000 bytes/s
+
+  the timer used has a 1 second resolution, if you download little files
+  with USB s10sh will display a not reliable information about transfer speed.
+
+HOW TO COMPILE
+
+  - Configure
+
+  Exec the ./configure script, that enables/disables readline and usb support.
+  This script try to guess the right default for readline, if the compilation
+  will fail try to disable the readline support answering "n".
+  The USB support is turned off by default, if you have the USB support in your
+  kernel (2.4-test1-ac19 should work) try to ask yes, USB performances are
+  drastically higher than serial performances.
+
+  - How to Build the binary
+
+  If you compile with the USB support first compile the libusb, shipped
+  with the s10sh tarball:
+
+    cd libusb
+    ./configure
+    make
+    cd ..
+
+    make install is NOT needed
+    if you experience compilation truble with libusb please, don't mail me,
+    mail instead the libusb authors.
+
+  The next step (the first if you don't compile with USB support) is
+  to type 'make', if it doesn't work send me an email <antirez@invece.org>,
+  please, report all the needed informations like OS type/ver, libc version,
+  kernel version, camera type, what is the problem, et cetera.
+
+NOTE FOR USB USERS
+
+                  *********** WARNING ************
+                  * A lot of users mailed me for *
+                  * problems with the USB driver:*
+                  * 99% of the cases the problem *
+                  * was that they tryed to run   *
+                  * S10sh as normal user. YOU    *
+                  * MUST USE IT AS ROOT, you may *
+                  * setuid it, but it's insecure *
+                  * ------ YOU ARE WARNED ------ *
+                  ********************************
+
+  In order to work, s10sh (libusb, that uses the userspace way to access
+  to the USB hardware) needs that you performs the following steps:
+
+	insmod usbcore
+	insmod usb-ohci *OR* isnmod usb-uhci
+	mount none /proc/bus/usb -t usbdevfs
+
+  How to know if you need to insert the OHCI or the UHCI driver?
+  UHCI is for the following motherboards: Intel PIIX4, VIA, ...
+  OHCI is for the following motherboards: Compaq, iMacs, OPTi, SiS, ALi, ...
+
+  If you are in trouble just try both the drivers :)
+
+  Obviously if you compiled a kernel without USB support you needs
+  to compile another kernel.
+  Anyway check http://www.linux-usb.org for more information.
+
+HOW TO USE
+
+  s10sh accepts the following command line options:
+
+  -D                    enable debug mode
+  -d <serialdevice>     set the serial device, default /dev/ttyS0
+  -a                    enable A50/Pro70 compatibility mode
+  -s <serialspeed>      set the serial speed (9600 19200 38400 57600 115200)
+  -u                    USB mode, default is serial mode
+  -g                    non-interactive mode, get all images
+  -l                    non-interactive mode, list all images
+  -E                    non-interactive mode, delete all images
+  -h                    show this help scree
+                        reports)
+  Example:
+
+  ./s10sh -d /dev/ttyS1  -- start the program in serial mode, COM2.
+
+  ./s10sh -u             -- start the program in USB mode.
+
+  ./s10sh -ug            -- get all images in USB mode.
+
+  If you are able to use a command line ftp client you can use S10sh. When you
+  start the program S10sh contacts the camera and shows a prompt like
+  this:
+
+  [Canon PowerShot S10] D:>
+
+  the format is [CAMERA ID] [CURRENT PATH]>
+
+  Now you can use 'ls' or 'cd' that are aliases in order to walk
+  among directories. The commands are:
+
+help                     show this help screen
+open                     open the camera
+reopen                   close and open the camera
+close                    close the connection with the camera
+speed         [speed]    change the serial speed
+quit                     close the camera and quit the program
+ping                     ping four times the camera
+clear                    clear the screen under some terminal types
+id                       show the camera id
+date                     show the internal date of the camera
+disk                     show the CF disk letter
+diskinfo      <disk>     show disk information
+ls | cd | dir <dir>      change to and list the specified directory
+lastls                   show the last cached directory listing
+get           <pathname> get the specified image
+getall                   get all the files in the current directory
+getallold                get all the old files in the current directory
+getallnew                get all the new files in the current directory
+tget          <pathname> get the specified image as thumbnail
+view          <pathname> view the thumbnail using xv
+viewall                  view all thumbnails in the current directory
+power                    show informations about power status
+overwrite                switch on/off the overwrite mode, when overwrite
+                         mode is ON the old files will be overwritten with
+                         the new files. For default ovewrite mode is
+                         turned OFF.
+mkdir         <dirname>  create a directory
+rmdir         <dirname>  remove a directory
+debug         (DEBUG)    turn the debug on/off
+getpkt        (DEBUG)    wait for a packet from the camera
+test <num>    (DEBUG)    send the specified request and wait for data
+rm | delete   <filename> remove a file in the current path
+deleteall                remove all files in the current directory
+deleteold                remove downloaded files in the current directory
+deletenew                remove new files in the current directory
+protect       <filename> set the protected flag (in the current path)
+unprotect     <filename> clear the protected flag (in the current path)
+new           <filename> clear the downloaded flag (in the current path)
+newall                   exec new against all files in the current directory
+old           <filename> set the downloaded flag (in the current path)
+oldall                   exec old against all files in the current directory
+protectall               protect all files in the current directory
+unprotectall             unprotect all files in the current directory
+upload        <source> [dest]  upload a file (USB only)
+
+  some command is not available in both serial and USB mode.
+
+  A directory entry has the following format:
+
+  --n-  IMG_0852 JPG          53k  Fri Jun 23 19:11:40 2000
+
+  the first 4 characters are the file attributes, the flags are:
+
+  p--- -i-- --n- ---e or combinations.
+  p = protected
+  i = directory
+  n = the file was not downloaded, alias "new" file. if the file does not
+      have the 'n' flags it is "old". So you can guess how the commands
+      with "new" or "old" postfix works.
+  e = directory entered with recursion.
+
+  An example of session:
+
+--- EXAMPLE BEGIN ---
+
+PowerShot SH -- version 0.0.1
+Copyright (C) 2000 by Salvatore Sanfilippo <antirez@invece.org>
+S10sh is FREE SOFTWARE under the terms of the GNU public license
+
+Open /dev/ttyS0: OK
+Sync: .....
+::Canon PowerShot A5::
+Switching to 115200 bound ..OK
+[Canon PowerShot S10] D:> ls
+
+DCIM          <DIR>        Thu Jun  8 20:41:56 2000
+        1 files      0 bytes
+
+[Canon PowerShot S10] D:> cd dcim
+
+102CANON      <DIR>        Thu Jun  8 20:41:56 2000
+CANONMSC      <DIR>        Fri Jun  9 00:16:10 2000
+        2 files      0 bytes
+
+[Canon PowerShot S10] D:\dcim> cd 102canon
+
+IMG_0252 JPG        1809k  Thu Jun  8 20:42:52 2000
+IMG_0253 JPG         210k  Thu Jun  8 20:54:44 2000
+        2 files      2068073 bytes
+
+[Canon PowerShot S10] D:\dcim\102canon> get img_0253.jpg
+Getting D:\dcim\102canon\img_0253.jpg, 215388 Kbytes
+0------------------25------------------50------------------75----------------100
+................................................................................
+Downloaded in 36 seconds, 5983 bytes/s
+get successful
+[Canon PowerShot S10] D:\dcim\102canon> exit
+bye!
+
+--- EXAMPLE END ---
+
+In order to get all your photos just login, cd to CANONxxx directory
+and use the 'getall' command.
+
+SOLUTION TO SERIAL PROBLEMS
+
+If you see 'X' instead of '.' during file download there are some
+transmission error, S10sh handles this conditions but if you get
+too 'X' maybe it's better to switch to a lower speed. A tip in order
+to get less serial errors is to take the system load low during file dowloading.
+There are'nt trasmission problems using USB. THe right order to check
+if s10sh works for your camera in serial mode is to try it using this
+command line, the first is the more simple to get working, the last
+is the more hard.
+
+s10sh -a -s 9600
+s10sh -a -s 19200
+s10sh -a -s 38400
+s10sh -a -s 57600
+s10sh -a -s 115200
+s10sh -s 9600
+s10sh -s 19200
+s10sh -s 38400
+s10sh -s 57600
+s10sh -s 115200
+
+Yes, if you experienced serial problems use the A50/Pro70 compatibility mode
+even if your camera isn't a PowerShot A50 or a PowerShot Pro70.
+
+SECURITY:
+
+This software open new files in an unsafe mode, this means that if you
+download your photos in a word-writable directory malcious users can
+overwrite/create files with your privileges. DONT use it in a world
+writable directory, also DONT setuid this software. If you need
+to access your devices as unprivileged user joke with groups.
+Security issues will be fixed later.
+
+REFERENCES:
+
+  gphoto		http://www.gphoto.org
+  ComLite32		http://www.endymion.com/portfolio/software/comlite32.htm
+  Canon PowerShot site	http://www.powershot.com
+  libusb		http://libusb.sourceforge.net/
+  Linux USB		http://www.linux-usb.org
+
+ * ALL THIRD PARTY BRAND, PRODUCT AND SERVICE NAMES MENTIONED ARE
+ * THE TRADEMARK OR REGISTERED TRADEMARK OF THEIR RESPECTIVE OWNERS

@@ -1,0 +1,87 @@
+#!/bin/sh
+
+echo S10sh configuration utility
+echo
+
+READLINE_DEFAULT="n"
+USB_DEFAULT="n"
+
+if test -f /usr/include/readline/readline.h; then
+	READLINE_DEFAULT="y"
+fi
+
+if test -f /usr/local/include/readline/readline.h; then
+	READLINE_DEFAULT="y"
+fi
+
+echo Do you want readline support? \(y/n default $READLINE_DEFAULT\)
+read TMP
+if [ "$TMP" != "" ]; then
+	READLINE_DEFAULT=$TMP
+fi
+
+echo Do you want USB support? \(y/n default $USB_DEFAULT\)
+read TMP
+if [ "$TMP" != "" ]; then
+	USB_DEFAULT=$TMP
+fi
+
+if [ "$READLINE_DEFAULT" != "y" ]; then
+	READLINE_DEFAULT="n"
+fi
+
+if [ "$USB_DEFAULT" != "y" ]; then
+	USB_DEFAULT="n"
+fi
+
+echo
+echo READLINE support: $READLINE_DEFAULT
+echo USB support     : $USB_DEFAULT
+
+if [ $READLINE_DEFAULT = "y" ]; then
+	HAVE_READLINE="-DHAVE_READLINE"
+	LIBREADLINE="-lreadline"
+	LIBTERMCAP="-ltermcap"
+else
+	HAVE_READLINE=""
+	LIBREADLINE=""
+	LIBTERMCAP=""
+fi
+
+if [ $USB_DEFAULT = "y" ]; then
+	HAVE_USB_SUPPORT="-DHAVE_USB_SUPPORT"
+
+    version=""
+    if test -f /usr/bin/libusb-config; then
+        lusbconf="/usr/bin/libusb-config"
+        version=`$lusbconf --version 2> /dev/null`
+    fi
+    if test -f /usr/local/bin/libusb-config; then
+        lusbconf="/usr/local/bin/libusb-config"
+        version=`$lusbconf --version 2> /dev/null`
+    fi
+
+    if [ -z $version ]; then
+	LIBUSB="libusb\/.libs\/libusb.a"
+	LIBUSBHEADER="-I./libusb"
+    else
+	LIBUSB=`$lusbconf --libs`
+	LIBUSBHEADER=`$lusbconf --cflags`
+	echo "libusb version = $version"
+	echo "using compile options '$LIBUSBHEADER'"
+	echo "using link options    '$LIBUSB'"
+    fi
+else
+	HAVE_USB_SUPPORT=""
+	LIBUSB=""
+fi
+
+cat Makefile.in | sed -e s:@HAVE_READLINE@:$HAVE_READLINE:g \
+			-e s:@LIBREADLINE@:$LIBREADLINE:g \
+			-e s:@LIBTERMCAP@:$LIBTERMCAP:g \
+			-e s:@HAVE_USB_SUPPORT@:$HAVE_USB_SUPPORT:g \
+			-e "s:@LIBUSB@:$LIBUSB:g" \
+			-e "s:@LIBUSBHEADER@:$LIBUSBHEADER:g" \
+		> Makefile
+
+echo Makefile created, try make

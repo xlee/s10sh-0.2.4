@@ -1,0 +1,69 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you don't have vprintf but do have _doprnt.  */
+#undef HAVE_DOPRNT
+
+/* Define if you have <unistd.h>.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the vprintf function.  */
+#undef HAVE_VPRINTF
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if your processor stores words with the most significant
+   byte first (like Motorola and SPARC, unlike Intel and VAX).  */
+#undef WORDS_BIGENDIAN
+
+#undef LINUX_API
+#undef BSD_API
+#undef DARWIN_API
+
+#undef HAVE_OLD_DEV_USB_USB_H
+
+#undef HAVE_LIMITS_H
+#undef HAVE_UNISTD_H
+#undef HAVE_VALUES_H
+
+#undef LIBUSB_MAJOR_VERSION
+#undef LIBUSB_MINOR_VERSION
+#undef LIBUSB_MICRO_VERSION
+#undef LIBUSB_INTERFACE_AGE
+#undef LIBUSB_BINARY_AGE
+
+/* The number of bytes in a char.  */
+#undef SIZEOF_CHAR
+
+/* The number of bytes in a int.  */
+#undef SIZEOF_INT
+
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a long long.  */
+#undef SIZEOF_LONG_LONG
+
+/* The number of bytes in a short.  */
+#undef SIZEOF_SHORT
+
+/* The number of bytes in a void *.  */
+#undef SIZEOF_VOID_P
+
+/* Define if you have the memmove function.  */
+#undef HAVE_MEMMOVE
+
+/* Define if you have the <dlfcn.h> header file.  */
+#undef HAVE_DLFCN_H
+
+/* Define if you have the <limits.h> header file.  */
+#undef HAVE_LIMITS_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the <values.h> header file.  */
+#undef HAVE_VALUES_H
